@@ -18,7 +18,7 @@ http://13.61.178.171:8080
 - 📦 Displaying the results in the form of beautiful cards
 
 
-## Запуск локально 🧪
+## Launch locally 🧪
 
 ### 1. Сloning
 ```bash
