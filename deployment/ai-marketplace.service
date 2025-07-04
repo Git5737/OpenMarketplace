@@ -1,0 +1,14 @@
+[Unit]
+Description=AI Marketplace backend service
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/ai-marketplace
+EnvironmentFile=/home/ubuntu/ai-marketplace/.env
+ExecStart=/home/ubuntu/ai-marketplace/ai-marketplace
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

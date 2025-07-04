@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"github.com/joho/godotenv"
-	"log"
 	"os"
 )
 
@@ -15,10 +14,7 @@ type Config struct {
 }
 
 func New() (*Config, error) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
-	}
+	_ = godotenv.Load()
 
 	cfg := &Config{
 		Port:               getEnv("PORT", "8080"),
