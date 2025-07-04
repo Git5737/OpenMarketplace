@@ -36,6 +36,7 @@ jobs:
 
       - name: Build app
         run: |
+          go mod tidy
           go mod download
           go build -o ai-marketplace ./cmd/server
 
