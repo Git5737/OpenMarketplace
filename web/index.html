@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Marketplace</title>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .search-bar {
+            transition: all 0.3s ease;
+        }
+        .sticky-top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 50;
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- Контейнер для пошуку -->
+<div id="searchContainer" class="flex justify-center items-center h-screen search-bar" style="height: 100vh;">
+    <form
+            id="searchForm"
+            hx-post="/ai/suggest"
+            hx-target="#results"
+            hx-swap="innerHTML"
+            class="flex items-center gap-3 bg-white shadow-md rounded-full px-6 py-3 border"
+    >
+        <input
+                type="text"
+                name="query"
+                placeholder="Пошук товару..."
+                class="px-4 py-2 rounded-full border border-gray-300 outline-none w-72"
+        />
+        <button
+                type="submit"
+                class="px-4 py-2 rounded-full bg-gray-700 text-white font-semibold"
+        >
+            Пошук
+        </button>
+    </form>
+</div>
+
+<div id="results" class="px-10 pb-20 mt-6"></div>
+
+<script>
+    document.body.addEventListener('htmx:afterSwap', (e) => {
+        const container = document.getElementById('searchContainer');
+        container.classList.add('sticky-top');
+        container.classList.remove('items-center');
+        container.style.height = 'auto';
+    });
+</script>
+
+</body>
+</html>

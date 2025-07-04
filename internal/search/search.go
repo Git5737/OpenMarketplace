@@ -4,15 +4,19 @@ import (
 	"ai_marketplace/internal/config"
 	"encoding/json"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 type ProductSuggestion struct {
 	Title    string `json:"title"`
 	Link     string `json:"link"`
 	ImageURL string `json:"image_url"`
-	//Description string `json:"description"`
+	Price    string `json:"price"`
+	Top      int    `json:"top"`
+	Left     int    `json:"left"`
 }
 
 type Serviсe struct {
@@ -28,17 +32,13 @@ func New(cfg *config.Config) *Serviсe {
 }
 
 func (s *Serviсe) FindGoogleProducts(query string) []ProductSuggestion {
-	apiKey := s.apiKey
-	cx := s.cx
-
 	baseURL := "https://www.googleapis.com/customsearch/v1"
 	params := url.Values{}
-	params.Set("key", apiKey)
-	params.Set("cx", cx)
+	params.Set("key", s.apiKey)
+	params.Set("cx", s.cx)
 	params.Set("q", query)
 
 	finalURL := baseURL + "?" + params.Encode()
-
 	log.Println("URL:", finalURL)
 
 	resp, err := http.Get(finalURL)
@@ -52,11 +52,14 @@ func (s *Serviсe) FindGoogleProducts(query string) []ProductSuggestion {
 		Items []struct {
 			Title   string `json:"title"`
 			Link    string `json:"link"`
-			Snippet string `json:"snippet"`
 			Pagemap struct {
 				CseImage []struct {
 					Src string `json:"src"`
 				} `json:"cse_image"`
+				Offer []struct {
+					Price string `json:"price"`
+				} `json:"offer"`
+				MetaTags []map[string]string `json:"metatags"`
 			} `json:"pagemap"`
 		} `json:"items"`
 	}
@@ -67,17 +70,31 @@ func (s *Serviсe) FindGoogleProducts(query string) []ProductSuggestion {
 	}
 
 	var suggestions []ProductSuggestion
+	rand.Seed(time.Now().UnixNano())
+
 	for _, item := range data.Items {
-		imageURL := ""
+		img := ""
+		price := ""
+
+		// Отримати зображення
 		if len(item.Pagemap.CseImage) > 0 {
-			imageURL = item.Pagemap.CseImage[0].Src
+			img = item.Pagemap.CseImage[0].Src
+		}
+
+		// Отримати ціну
+		if len(item.Pagemap.Offer) > 0 {
+			price = item.Pagemap.Offer[0].Price
+		} else if len(item.Pagemap.MetaTags) > 0 {
+			price = item.Pagemap.MetaTags[0]["product:price:amount"]
 		}
 
 		suggestions = append(suggestions, ProductSuggestion{
-			Title: item.Title,
-			Link:  item.Link,
-			//Description: item.Snippet,
-			ImageURL: imageURL,
+			Title:    item.Title,
+			Link:     item.Link,
+			ImageURL: img,
+			Price:    price,
+			Top:      rand.Intn(80), // 0–80% зверху
+			Left:     rand.Intn(90),
 		})
 	}
 

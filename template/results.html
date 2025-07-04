@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Результати</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    {{range .}}
+    <div class="bg-white rounded-xl shadow-md p-4 flex flex-col items-center hover:scale-105 transition-transform">
+        <img src="{{.ImageURL}}" alt="{{.Title}}" class="w-full h-40 object-contain mb-2">
+        <div class="font-semibold text-center text-sm">{{.Title}}</div>
+        {{if .Price}}
+        <div class="text-green-600 text-sm font-bold mt-1">{{.Price}} грн</div>
+        {{end}}
+        <a href="{{.Link}}" class="text-xs text-blue-600 underline mt-1" target="_blank">Перейти</a>
+    </div>
+    {{end}}
+</div>
+</body>
+</html>

@@ -16,6 +16,7 @@ func main() {
 	}
 
 	app := fiber.New()
+	app.Static("/", "./web")
 
 	aiServise := ai.New(cfg)
 	searchServise := search.New(cfg)
